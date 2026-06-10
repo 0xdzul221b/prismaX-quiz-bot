@@ -246,6 +246,141 @@ def serve_ui():
     </body>
     </html>
     """
+                line-height: 1.5;
+                margin-bottom: 20px;
+                color: #f1f1f5;
+                font-weight: 500;
+            }
+            .options-container {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .option-btn {
+                background: rgba(33, 33, 42, 0.9);
+                border: 1px solid rgba(255,255,255,0.08);
+                color: #d1d1d6;
+                padding: 14px;
+                border-radius: 8px;
+                text-align: left;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .option-btn:hover {
+                background: rgba(45, 45, 58, 0.9);
+                border-color: rgba(255,255,255,0.2);
+            }
+            .correct {
+                background: rgba(46, 204, 113, 0.2) !important;
+                border-color: #2ecc71 !important;
+                color: #2ecc71 !important;
+            }
+            .wrong {
+                background: rgba(231, 76, 60, 0.2) !important;
+                border-color: #e74c3c !important;
+                color: #e74c3c !important;
+            }
+            .score-screen {
+                text-align: center;
+            }
+            .restart-btn {
+                background: linear-gradient(90deg, #4285f4, #a733ff);
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-top: 20px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="quiz-card" id="quiz-box">
+            <div class="header">
+                <h2>PRISMAX</h2>
+                <div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div>
+            </div>
+            <div id="quiz-body">
+                <div class="question" id="q-text">Loading Quiz...</div>
+                <div class="options-container" id="options-box"></div>
+            </div>
+        </div>
+
+        <script>
+            let quizzes = [];
+            let currentIdx = 0;
+            let score = 0;
+
+            async function fetchQuizzes() {
+                try {
+                    let res = await fetch('/get-quiz');
+                    let data = await res.json();
+                    quizzes = data.quizzes;
+                    currentIdx = 0;
+                    score = 0;
+                    showQuestion();
+                } catch (err) {
+                    document.getElementById('q-text').innerText = "Failed to load quiz. Try again.";
+                }
+            }
+
+            function showQuestion() {
+                if(currentIdx >= quizzes.length) {
+                    showResult();
+                    return;
+                }
+                let q = quizzes[currentIdx];
+                document.getElementById('q-text').innerText = `Q${currentIdx + 1}. ${q.question}`;
+                let optionsBox = document.getElementById('options-box');
+                optionsBox.innerHTML = '';
+                
+                q.options.forEach(opt => {
+                    let btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(btn, opt, q.answer);
+                    optionsBox.appendChild(btn);
+                });
+            }
+
+            function checkAnswer(btn, selected, correct) {
+                let buttons = document.querySelectorAll('.option-btn');
+                buttons.forEach(b => b.disabled = true);
+
+                if(selected === correct) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('wrong');
+                    buttons.forEach(b => {
+                        if(b.innerText === correct) b.classList.add('correct');
+                    });
+                }
+
+                setTimeout(() => {
+                    currentIdx++;
+                    showQuestion();
+                }, 1500);
+            }
+
+            function showResult() {
+                document.getElementById('quiz-body').innerHTML = `
+                    <div class="score-screen">
+                        <h3>Quiz Completed!</h3>
+                        <p style="font-size: 24px; color:#00f2fe;">Your Score: ${score} / ${quizzes.length}</p>
+                        <button class="restart-btn" onclick="location.reload()">Play Again</button>
+                    </div>
+                `;
+            }
+
+            fetchQuizzes();
+        </script>
+    </body>
+    </html>
+    """
                 font-size: 15px;
                 line-height: 1.5;
                 margin-bottom: 20px;
