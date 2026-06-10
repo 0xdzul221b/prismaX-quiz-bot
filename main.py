@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import random
 import requests
 import os
 
 app = FastAPI()
 
-# CORS Middleware for Frontend Access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,8 +14,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
 QUIZ_BANK = [
     {"id": 1, "question": "What is PrismaX?", "options": ["A crypto exchange", "A service layer for Physical AI", "A gaming platform", "A cloud provider"], "answer": "A service layer for Physical AI"},
     {"id": 2, "question": "What are the three core pillars of PrismaX?", "options": ["Compute, Storage, Network", "Data, Teleoperation, Models", "AI, Blockchain, Gaming", "Robots, NFTs, DeFi"], "answer": "Data, Teleoperation, Models"},
@@ -38,30 +40,211 @@ QUIZ_BANK = [
     {"id": 19, "question": "How does PrismaX plan to reward data contributors?", "options": ["Through fair-use value sharing", "Free hardware only", "Social media badges only", "Free internet access"], "answer": "Through fair-use value sharing"},
     {"id": 20, "question": "What best describes PrismaX's mission?", "options": ["Bringing human skills to robots", "Bringing robots to Mars", "Replacing all workers", "Building video games"], "answer": "Bringing human skills to robots"}
 ]
-@app.get("/")
-def home():
-    return {"message": "PrismaX Quiz Bot Backend is Online!"}
+
 @app.get("/get-quiz")
 def get_quiz():
     random_quiz = random.sample(QUIZ_BANK, 10)
     return {"status": "success", "total": len(random_quiz), "quizzes": random_quiz}
-@app.post("/ask-ai")
-def ask_ai(user_message: str):
-    if not OPENROUTER_API_KEY:
-        raise HTTPException(status_code=500, detail="OpenRouter API Key set kora nai!")
-    
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-        "model": "meta-llama/llama-3-8b-instruct:free",
-        "messages": [
-            {"role": "system", "content": "Tumi ekta PrismaX Quiz Bot Assistant."},
-            {"role": "user", "content": user_message}
-        ]
-    }
-    
-    response = requests.post(OPENROUTER_URL, headers=headers, json=data)
-    return response.json()
+
+# 🎭 Ekhane automatic premium dark UI generate hobe!
+@app.get("/", response_class=HTMLResponse)
+def serve_ui():
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PRISMAX SYSTEMS | QUIZ</title>
+        <style>
+            body {
+                background-color: #0b0c10;
+                background-image: linear-gradient(rgba(18, 18, 24, 0.7) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(18, 18, 24, 0.7) 1px, transparent 1px);
+                background-size: 25px 25px;
+                color: #ffffff;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .quiz-card {
+                background: rgba(23, 23, 28, 0.85);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                padding: 25px;
+                max-width: 420px;
+                width: 100%;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                position: relative;
+                border: 1px solid rgba(255,255,255,0.05);
+            }
+            .quiz-card::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #4285f4, #a733ff, #00f2fe);
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header h2 {
+                letter-spacing: 2px;
+                font-size: 18px;
+                margin: 0;
+                color: #e0e0e3;
+                text-transform: uppercase;
+            }
+            .subtitle {
+                font-size: 11px;
+                color: #888893;
+                margin-top: 5px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .question {
+                font-size: 15px;
+                line-height: 1.5;
+                margin-bottom: 20px;
+                color: #f1f1f5;
+                font-weight: 500;
+            }
+            .options-container {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .option-btn {
+                background: rgba(33, 33, 42, 0.9);
+                border: 1px solid rgba(255,255,255,0.08);
+                color: #d1d1d6;
+                padding: 14px;
+                border-radius: 8px;
+                text-align: left;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .option-btn:hover {
+                background: rgba(45, 45, 58, 0.9);
+                border-color: rgba(255,255,255,0.2);
+            }
+            .correct {
+                background: rgba(46, 204, 113, 0.2) !important;
+                border-color: #2ecc71 !important;
+                color: #2ecc71 !important;
+            }
+            .wrong {
+                background: rgba(231, 76, 60, 0.2) !important;
+                border-color: #e74c3c !important;
+                color: #e74c3c !important;
+            }
+            .score-screen {
+                text-align: center;
+            }
+            .restart-btn {
+                background: linear-gradient(90deg, #4285f4, #a733ff);
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-top: 20px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="quiz-card" id="quiz-box">
+            <div class="header">
+                <h2>PRISMAX SYSTEMS</h2>
+                <div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div>
+            </div>
+            <div id="quiz-body">
+                <div class="question" id="q-text">Loading Quiz...</div>
+                <div class="options-container" id="options-box"></div>
+            </div>
+        </div>
+
+        <script>
+            let quizzes = [];
+            let currentIdx = 0;
+            let score = 0;
+
+            async function fetchQuizzes() {
+                try {
+                    let res = await fetch('/get-quiz');
+                    let data = await res.json();
+                    quizzes = data.quizzes;
+                    currentIdx = 0;
+                    score = 0;
+                    showQuestion();
+                } catch (err) {
+                    document.getElementById('q-text').innerText = "Failed to load quiz. Try again.";
+                }
+            }
+
+            function showQuestion() {
+                if(currentIdx >= quizzes.length) {
+                    showResult();
+                    return;
+                }
+                let q = quizzes[currentIdx];
+                document.getElementById('q-text').innerText = `Q${currentIdx + 1}. ${q.question}`;
+                let optionsBox = document.getElementById('options-box');
+                optionsBox.innerHTML = '';
+                
+                q.options.forEach(opt => {
+                    let btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(btn, opt, q.answer);
+                    optionsBox.appendChild(btn);
+                });
+            }
+
+            function checkAnswer(btn, selected, correct) {
+                let buttons = document.querySelectorAll('.option-btn');
+                buttons.forEach(b => b.disabled = true); // Disable further clicks
+
+                if(selected === correct) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('wrong');
+                    // show right answer
+                    buttons.forEach(b => {
+                        if(b.innerText === correct) b.classList.add('correct');
+                    });
+                }
+
+                setTimeout(() => {
+                    currentIdx++;
+                    showQuestion();
+                }, 1500);
+            }
+
+            function showResult() {
+                document.getElementById('quiz-body').innerHTML = `
+                    <div class="score-screen">
+                        <h3>Quiz Completed!</h3>
+                        <p style="font-size: 24px; color:#00f2fe;">Your Score: ${score} / ${quizzes.length}</p>
+                        <button class="restart-btn" onclick="location.reload()">Play Again</button>
+                    </div>
+                `;
+            }
+
+            fetchQuizzes();
+        </script>
+    </body>
+    </html>
+    """
