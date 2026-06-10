@@ -301,7 +301,7 @@ def serve_ui():
 
         <div class="quiz-card" id="quiz-box">
             <div class="header">
-                <h2>PRISMAX SYSTEMS</h2>
+                <h2>PRISMAX</h2>
                 <div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div>
             </div>
             <div id="quiz-body">
