@@ -43,5 +43,133 @@ def get_quiz():
 
 @app.get("/", response_class=HTMLResponse)
 def serve_ui():
-    html_content = """<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PRISMAX | QUIZ</title><style>body{background-color:#0b0c10;background-image:linear-gradient(rgba(18,18,24,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(18,18,24,.7) 1px,transparent 1px);background-size:25px 25px;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;box-sizing:border-box}.quiz-card{background:rgba(23,23,28,.85);backdrop-filter:blur(10px);border-radius:12px;padding:25px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.5);position:relative;border:1px solid rgba(255,255,255,.05)}.quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4285f4,#a733ff,#00f2fe);border-top-left-radius:12px;border-top-right-radius:12px}.header{text-align:center;margin-bottom:20px}.header h2{letter-spacing:2px;font-size:18px;margin:0;color:#e0e0e3;text-transform:uppercase}.subtitle{font-size:11px;color:#888893;margin-top:5px;text-transform:uppercase;letter-spacing:1px}.question{font-size:15px;line-height:1.5;margin-bottom:20px;color:#f1f1f5;font-weight:500}.options-container{display:flex;flex-direction:column;gap:12px}.option-btn{background:rgba(33,33,42,.9);border:1px solid rgba(255,255,255,.08);color:#d1d1d6;padding:14px;border-radius:8px;text-align:left;font-size:14px;cursor:pointer;transition:all .2s ease}.option-btn:hover{background:rgba(45,45,58,.9);border-color:rgba(255,255,255,.2)}.correct{background:rgba(46,204,113,.2)!important;border-color:#2ecc71!important;color:#2ecc71!important}.wrong{background:rgba(231,76,60,.2)!important;border-color:#e74c3c!important;color:#e74c3c!important}.score-screen{text-align:center}.restart-btn{background:linear-gradient(90deg,#4285f4,#a733ff);color:#fff;border:none;padding:12px 25px;border-radius:8px;cursor:pointer;margin-top:20px;font-weight:700}</style></head><body><div class="quiz-card" id="quiz-box"><div class="header"><h2>PRISMAX</h2><div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div></div><div id="quiz-body"><div class="question" id="q-text">Loading Quiz...</div><div class="options-container" id="options-box"></div></div></div><script>let quizzes=[],currentIdx=0,score=0;async function fetchQuizzes(){try{let e=await fetch("/get-quiz"),t=await e.json();quizzes=t.quizzes,currentIdx=0,score=0,showQuestion()}catch(e){document.getElementById("q-text").innerText="Failed to load quiz. Try again."}}function showQuestion(){if(currentIdx>=quizzes.length){showResult();return}let e=quizzes[currentIdx];document.getElementById("q-text").innerText=`Q${currentIdx+1}. ${e.question}`;let t=document.getElementById("options-box");t.innerHTML="",e.options.forEach(n=>{let o=document.createElement("button");o.className="option-btn",o.innerText=n,o.onclick=()=>checkAnswer(o,n,e.answer),t.appendChild(o)})}function checkAnswer(e,t,n){let o=document.querySelectorAll(".option-btn");o.forEach(e=>e.disabled=!0),t===n?(e.classList.add("correct"),score++):(e.classList.add("wrong"),o.forEach(e=>{e.innerText===n&&e.classList.add("correct")})),setTimeout(()=>{currentIdx++,showQuestion()},1500)}function showResult(){document.getElementById("quiz-body").innerHTML=`<div class="score-screen"><h3>Quiz Completed!</h3><p style="font-size: 24px; color:#00f2fe;">Your Score: ${score} / ${quizzes.length}</p><button class="restart-btn" onclick="location.reload()">Play Again</button></div>`}fetchQuizzes();</script></body></html>"""
+    html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PRISMAX | QUIZ</title>
+    <style>
+        body{background-color:#0b0c10;background-image:linear-gradient(rgba(18,18,24,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(18,18,24,.7) 1px,transparent 1px);background-size:25px 25px;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;box-sizing:border-box}
+        .quiz-card{background:rgba(23,23,28,.85);backdrop-filter:blur(10px);border-radius:12px;padding:25px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.5);position:relative;border:1px solid rgba(255,255,255,.05)}
+        .quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4285f4,#a733ff,#00f2fe);border-top-left-radius:12px;border-top-right-radius:12px}
+        .header{text-align:center;margin-bottom:20px}
+        .header h2{letter-spacing:2px;font-size:18px;margin:0;color:#e0e0e3;text-transform:uppercase}
+        .subtitle{font-size:11px;color:#888893;margin-top:5px;text-transform:uppercase;letter-spacing:1px}
+        .timer-bar-container{width:100%;background:rgba(255,255,255,0.05);height:4px;border-radius:2px;margin-bottom:20px;overflow:hidden}
+        .timer-bar{width:100%;height:100%;background:linear-gradient(90deg,#00f2fe,#4285f4);transition:width 1s linear}
+        .question{font-size:15px;line-height:1.5;margin-bottom:20px;color:#f1f1f5;font-weight:500}
+        .options-container{display:flex;flex-direction:column;gap:12px}
+        .option-btn{background:rgba(33,33,42,.9);border:1px solid rgba(255,255,255,.08);color:#d1d1d6;padding:14px;border-radius:8px;text-align:left;font-size:14px;cursor:pointer;transition:all .2s ease}
+        .option-btn:hover{background:rgba(45,45,58,.9);border-color:rgba(255,255,255,.2)}
+        .correct{background:rgba(46,204,113,.2)!important;border-color:#2ecc71!important;color:#2ecc71!important}
+        .wrong{background:rgba(231,76,60,.2)!important;border-color:#e74c3c!important;color:#e74c3c!important}
+        .score-screen{text-align:center}
+        .btn-group{display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:center;margin-top:20px}
+        .restart-btn{background:linear-gradient(90deg,#4285f4,#a733ff);color:#fff;border:none;padding:12px 25px;border-radius:8px;cursor:pointer;font-weight:700;width:100%;max-width:200px}
+        .x-share-btn{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.2);padding:12px 25px;border-radius:8px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:200px;text-decoration:none}
+        .x-share-btn:hover{background:#15181c;border-color:rgba(255,255,255,0.4)}
+    </style>
+</head>
+<body>
+    <div class="quiz-card" id="quiz-box">
+        <div class="header">
+            <h2>PRISMAX</h2>
+            <div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div>
+        </div>
+        <div id="quiz-body">
+            <div class="timer-bar-container"><div class="timer-bar" id="t-bar"></div></div>
+            <div class="question" id="q-text">Loading Quiz...</div>
+            <div class="options-container" id="options-box"></div>
+        </div>
+    </div>
+    <script>
+        let quizzes=[],currentIdx=0,score=0,timeLeft=15,timerInterval=null,canClick=true;
+        async function fetchQuizzes(){
+            try{
+                let e=await fetch("/get-quiz"),t=await e.json();
+                quizzes=t.quizzes,currentIdx=0,score=0,showQuestion()
+            }catch(e){
+                document.getElementById("q-text").innerText="Failed to load quiz. Try again."
+            }
+        }
+        function startTimer(){
+            clearInterval(timerInterval);
+            timeLeft=15;
+            canClick=true;
+            updateTimerBar();
+            timerInterval=setInterval(()=>{
+                timeLeft--;
+                updateTimerBar();
+                if(timeLeft<=0){
+                    clearInterval(timerInterval);
+                    canClick=false;
+                    autoTimeOut()
+                }
+            },1000)
+        }
+        function updateTimerBar(){
+            let percentage=(timeLeft/15)*100;
+            document.getElementById("t-bar").style.width=percentage+"%"
+        }
+        function showQuestion(){
+            if(currentIdx>=quizzes.length){
+                showResult();
+                return
+            }
+            startTimer();
+            let e=quizzes[currentIdx];
+            document.getElementById("q-text").innerText=`Q${currentIdx+1}. ${e.question}`;
+            let t=document.getElementById("options-box");
+            t.innerHTML="",e.options.forEach(n=>{
+                let o=document.createElement("button");
+                o.className="option-btn",o.innerText=n,o.onclick=()=>checkAnswer(o,n,e.answer),t.appendChild(o)
+            })
+        }
+        function checkAnswer(e,t,n){
+            if(!canClick)return;
+            clearInterval(timerInterval);
+            canClick=false;
+            let o=document.querySelectorAll(".option-btn");
+            o.forEach(e=>e.disabled=!0);
+            if(t===n){
+                e.classList.add("correct");
+                score++
+            }else{
+                e.classList.add("wrong");
+                o.forEach(e=>{if(e.innerText===n)e.classList.add("correct")})
+            }
+            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+        }
+        function autoTimeOut(){
+            let e=quizzes[currentIdx].answer;
+            let t=document.querySelectorAll(".option-btn");
+            t.forEach(t=>{
+                t.disabled=!0;
+                if(t.innerText===e)t.classList.add("correct");
+                else t.classList.add("wrong")
+            });
+            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+        }
+        function showResult(){
+            clearInterval(timerInterval);
+            let shareText=encodeURIComponent(`I just scored ${score}/10 on the PRISMAX Physical AI Quiz! 🧠🚀\n\nTry it here: ${window.location.origin}`);
+            let xUrl=`https://x.com/intent/tweet?text=${shareText}`;
+            document.getElementById("quiz-body").innerHTML=`
+                <div class="score-screen">
+                    <h3>Quiz Completed!</h3>
+                    <p style="font-size: 24px; color:#00f2fe; margin-bottom:25px;">Your Score: ${score} / ${quizzes.length}</p>
+                    <div class="btn-group">
+                        <a class="x-share-btn" href="${xUrl}" target="_blank">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            Share on X
+                        </a>
+                        <button class="restart-btn" onclick="location.reload()">Play Again</button>
+                    </div>
+                </div>`
+        }
+        fetchQuizzes();
+    </script>
+</body>
+</html>"""
     return html_content
