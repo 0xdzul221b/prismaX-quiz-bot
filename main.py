@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import random
-import os
 
 app = FastAPI()
 
@@ -48,49 +47,218 @@ def serve_ui():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>PRISMAX | QUIZ</title>
+    <title>PRISMAX | OFFICIAL QUIZ</title>
     <style>
-        body{background-color:#0b0c10;background-image:linear-gradient(rgba(18,18,24,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(18,18,24,.7) 1px,transparent 1px);background-size:25px 25px;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;box-sizing:border-box}
-        .quiz-card{background:rgba(23,23,28,.85);backdrop-filter:blur(10px);border-radius:12px;padding:25px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.5);position:relative;border:1px solid rgba(255,255,255,.05)}
-        .quiz-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4285f4,#a733ff,#00f2fe);border-top-left-radius:12px;border-top-right-radius:12px}
-        .header{text-align:center;margin-bottom:20px}
-        .header h2{letter-spacing:2px;font-size:18px;margin:0;color:#e0e0e3;text-transform:uppercase}
-        .subtitle{font-size:11px;color:#888893;margin-top:5px;text-transform:uppercase;letter-spacing:1px}
-        .timer-bar-container{width:100%;background:rgba(255,255,255,0.05);height:4px;border-radius:2px;margin-bottom:20px;overflow:hidden}
-        .timer-bar{width:100%;height:100%;background:linear-gradient(90deg,#00f2fe,#4285f4);transition:width 1s linear}
-        .question{font-size:15px;line-height:1.5;margin-bottom:20px;color:#f1f1f5;font-weight:500}
-        .options-container{display:flex;flex-direction:column;gap:12px}
-        .option-btn{background:rgba(33,33,42,.9);border:1px solid rgba(255,255,255,.08);color:#d1d1d6;padding:14px;border-radius:8px;text-align:left;font-size:14px;cursor:pointer;transition:all .2s ease}
-        .option-btn:hover{background:rgba(45,45,58,.9);border-color:rgba(255,255,255,.2)}
-        .correct{background:rgba(46,204,113,.2)!important;border-color:#2ecc71!important;color:#2ecc71!important}
-        .wrong{background:rgba(231,76,60,.2)!important;border-color:#e74c3c!important;color:#e74c3c!important}
-        .score-screen{text-align:center}
-        .btn-group{display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:center;margin-top:20px}
-        .restart-btn{background:linear-gradient(90deg,#4285f4,#a733ff);color:#fff;border:none;padding:12px 25px;border-radius:8px;cursor:pointer;font-weight:700;width:100%;max-width:200px}
-        .x-share-btn{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.2);padding:12px 25px;border-radius:8px;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:200px;text-decoration:none}
-        .x-share-btn:hover{background:#15181c;border-color:rgba(255,255,255,0.4)}
+        body {
+            background-color: #0d0d0d;
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .quiz-card {
+            background: #202020;
+            border: 1px solid #3a3a3a;
+            border-radius: 0px;
+            padding: 35px 30px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            position: relative;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #3a3a3a;
+            padding-bottom: 15px;
+        }
+        .header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin: 0;
+            color: #DFD8D0;
+        }
+        .subtitle {
+            font-size: 11px;
+            color: #888888;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+        .timer-bar-container {
+            width: 100%;
+            background: #2d2d2d;
+            height: 2px;
+            margin-bottom: 25px;
+        }
+        .timer-bar {
+            width: 100%;
+            height: 100%;
+            background: #DFD8D0;
+            transition: width 1s linear;
+        }
+        .question {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #FFFFFF;
+            font-weight: 500;
+            letter-spacing: -0.1px;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background: #181818;
+            border: 1px solid #333333;
+            color: #DFD8D0;
+            padding: 15px 18px;
+            border-radius: 0px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 400;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+        .option-btn:hover {
+            background: #262626;
+            border-color: #555555;
+        }
+        .correct {
+            background: #1b3a24 !important;
+            border-color: #2ecc71 !important;
+            color: #2ecc71 !important;
+            font-weight: 600;
+        }
+        .wrong {
+            background: #3d1c1c !important;
+            border-color: #e74c3c !important;
+            color: #e74c3c !important;
+            font-weight: 600;
+        }
+        .score-screen {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .score-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #DFD8D0;
+            margin-bottom: 10px;
+        }
+        .score-num {
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 15px 0 30px 0;
+            letter-spacing: -1px;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+        .restart-btn {
+            background: #DFD8D0;
+            color: #202020;
+            border: none;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: opacity 0.15s ease;
+        }
+        .restart-btn:hover {
+            opacity: 0.9;
+        }
+        .x-share-btn {
+            background: transparent;
+            color: #DFD8D0;
+            border: 1px solid #444444;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            text-decoration: none;
+            box-sizing: border-box;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.15s ease;
+        }
+        .x-share-btn:hover {
+            background: #282828;
+            border-color: #666666;
+        }
     </style>
 </head>
 <body>
     <div class="quiz-card" id="quiz-box">
         <div class="header">
             <h2>PRISMAX</h2>
-            <div class="subtitle">🔒 PHYSICAL AI & DATA SHIELD QUIZ</div>
+            <div class="subtitle">PHYSICAL AI INTERACTION PROTOCOL</div>
         </div>
         <div id="quiz-body">
             <div class="timer-bar-container"><div class="timer-bar" id="t-bar"></div></div>
-            <div class="question" id="q-text">Loading Quiz...</div>
+            <div class="question" id="q-text">Initializing parameters...</div>
             <div class="options-container" id="options-box"></div>
         </div>
     </div>
     <script>
         let quizzes=[],currentIdx=0,score=0,timeLeft=15,timerInterval=null,canClick=true;
+        const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+
+        function playRobotSound(type) {
+            try {
+                let osc=audioCtx.createOscillator();
+                let gain=audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if(type==='correct') {
+                    osc.type='triangle';
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5 (Chime synth)
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+                } else if(type==='wrong') {
+                    osc.type='sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                    osc.frequency.linearRampToValueAtTime(70, audioCtx.currentTime + 0.3); // Downward metallic buzz
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+                }
+            } catch(e){}
+        }
+
         async function fetchQuizzes(){
             try{
                 let e=await fetch("/get-quiz"),t=await e.json();
                 quizzes=t.quizzes,currentIdx=0,score=0,showQuestion()
             }catch(e){
-                document.getElementById("q-text").innerText="Failed to load quiz. Try again."
+                document.getElementById("q-text").innerText="Connection lost. Protocol execution failed."
             }
         }
         function startTimer(){
@@ -119,7 +287,7 @@ def serve_ui():
             }
             startTimer();
             let e=quizzes[currentIdx];
-            document.getElementById("q-text").innerText=`Q${currentIdx+1}. ${e.question}`;
+            document.getElementById("q-text").innerText=`DATA_SHEETS_0${currentIdx+1} // ${e.question}`;
             let t=document.getElementById("options-box");
             t.innerHTML="",e.options.forEach(n=>{
                 let o=document.createElement("button");
@@ -133,38 +301,41 @@ def serve_ui():
             let o=document.querySelectorAll(".option-btn");
             o.forEach(e=>e.disabled=!0);
             if(t===n){
-                e.classList.add("correct");
+                e.classList.add('correct');
+                playRobotSound('correct');
                 score++
             }else{
-                e.classList.add("wrong");
-                o.forEach(e=>{if(e.innerText===n)e.classList.add("correct")})
+                e.classList.add('wrong');
+                playRobotSound('wrong');
+                o.forEach(e=>{if(e.innerText===n)e.classList.add('correct')})
             }
-            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+            setTimeout(()=>{currentIdx++,showQuestion()},1600)
         }
         function autoTimeOut(){
+            playRobotSound('wrong');
             let e=quizzes[currentIdx].answer;
             let t=document.querySelectorAll(".option-btn");
             t.forEach(t=>{
                 t.disabled=!0;
-                if(t.innerText===e)t.classList.add("correct");
-                else t.classList.add("wrong")
+                if(t.innerText===e)t.classList.add('correct');
+                else t.classList.add('wrong')
             });
-            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+            setTimeout(()=>{currentIdx++,showQuestion()},1600)
         }
         function showResult(){
             clearInterval(timerInterval);
-            let shareText=encodeURIComponent(`I just scored ${score}/10 on the PRISMAX Physical AI Quiz! 🧠🚀\n\nTry it here: ${window.location.origin}`);
+            let shareText=encodeURIComponent(`PrismaX Physical AI Evaluation Metrics Complete.\n\nScore Matrix: [ ${score} / 10 ]\n\nExecute protocol here: ${window.location.origin}`);
             let xUrl=`https://x.com/intent/tweet?text=${shareText}`;
             document.getElementById("quiz-body").innerHTML=`
                 <div class="score-screen">
-                    <h3>Quiz Completed!</h3>
-                    <p style="font-size: 24px; color:#00f2fe; margin-bottom:25px;">Your Score: ${score} / ${quizzes.length}</p>
+                    <div class="score-title">EVALUATION METRICS</div>
+                    <div class="score-num">${score} / ${quizzes.length}</div>
                     <div class="btn-group">
+                        <button class="restart-btn" onclick="location.reload()">Re-Run Analytics</button>
                         <a class="x-share-btn" href="${xUrl}" target="_blank">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                            Share on X
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="#DFD8D0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            Share Logs on X
                         </a>
-                        <button class="restart-btn" onclick="location.reload()">Play Again</button>
                     </div>
                 </div>`
         }
