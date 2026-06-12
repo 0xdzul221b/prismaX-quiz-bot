@@ -50,10 +50,13 @@ def serve_ui():
     <title>PRISMAX | QUIZ</title>
     <style>
         body {
+            /* Duta image layer akshathe use kora hoyeche background e */
+            background-image: url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300672.png'), 
+                              url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300671.png');
             background-color: #0b0c10;
-            background-image: linear-gradient(rgba(18, 18, 24, 0.7) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(18, 18, 24, 0.7) 1px, transparent 1px);
-            background-size: 25px 25px;
+            background-size: contain, cover;
+            background-position: center, center;
+            background-repeat: no-repeat, no-repeat;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -65,24 +68,16 @@ def serve_ui():
             box-sizing: border-box;
         }
         .quiz-card {
-            background: rgba(23, 23, 28, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(23, 23, 28, 0.65); /* Opacity komano hoyeche jate background bhalo dekha jay */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 12px;
             padding: 25px;
             max-width: 420px;
             width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             position: relative;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .quiz-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #4285f4, #a733ff, #00f2fe);
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .header {
             text-align: center;
@@ -133,7 +128,7 @@ def serve_ui():
             gap: 12px;
         }
         .option-btn {
-            background: rgba(33, 33, 42, 0.9);
+            background: rgba(33, 33, 42, 0.8);
             border: 1px solid rgba(255,255,255,0.08);
             color: #d1d1d6;
             padding: 14px;
