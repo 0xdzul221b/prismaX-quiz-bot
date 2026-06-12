@@ -13,7 +13,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 20 full complete questions in the database bank
 QUIZ_BANK = [
     {"id": 1, "question": "What is PrismaX?", "options": ["A crypto exchange", "A service layer for Physical AI", "A gaming platform", "A cloud provider"], "answer": "A service layer for Physical AI"},
     {"id": 2, "question": "What are the three core pillars of PrismaX?", "options": ["Compute, Storage, Network", "Data, Teleoperation, Models", "AI, Blockchain, Gaming", "Robots, NFTs, DeFi"], "answer": "Data, Teleoperation, Models"},
@@ -39,7 +38,6 @@ QUIZ_BANK = [
 
 @app.get("/get-quiz")
 def get_quiz():
-    # Protibar backend 20-tar bhetor theke randomly 10-ta choice korbe
     return {"status": "success", "total": 10, "quizzes": random.sample(QUIZ_BANK, 10)}
 
 @app.get("/", response_class=HTMLResponse)
@@ -53,13 +51,12 @@ def serve_ui():
     <style>
         body {
             background-image: 
-                url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='562' viewBox='0 0 1000 562'><rect width='1000' height='562' fill='%23231411'/><g opacity='0.55' style='mix-blend-mode:screen'><path d='M150 250h20v20h-20zm30 0h40v20h-40zm50-10h30v40h-30zm40 15h60v10h-60zm70-20h20v50h-20zm30 10h50v30h-50zm60-15h40v40h-40zm50 10h30v20h-30zm40-20h50v60h-50zm60 15h30v30h-30zm40-5h40v20h-40zm50-10h20v40h-20z' fill='%236e3c2c'/><path d='M380 230h40v30h-40zm50 10h30v20h-30zm40-20h50v50h-50zm60 15h30v30h-30zm40-5h40v20h-40zm50-10h20v40h-20zm30-20h40v60h-40zm50 10h30v20h-30zm40-15h50v40h-50zm60 15h30v20h-30z' fill='%23542a1e'/></g><radialGradient id='g' cx='30%' cy='40%' r='60%'><stop offset='0%' stop-color='%23b89678' stop-opacity='0.28'/><stop offset='60%' stop-color='%231a0f0d' stop-opacity='0.95'/><stop offset='100%' stop-color='%23090504'/></radialGradient><rect width='1000' height='562' fill='url(%23g)' style='mix-blend-mode:multiply'/></svg>"),
-                linear-gradient(rgba(18, 18, 24, 0.4) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(18, 18, 24, 0.4) 1px, transparent 1px);
-            background-size: cover, 30px 30px, 30px 30px;
-            background-position: center, center, center;
-            background-repeat: no-repeat, repeat, repeat;
-            background-color: #0b0c10;
+                url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300672.png'), 
+                url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300671.png');
+            background-color: #0d0908;
+            background-size: 85% auto, cover;
+            background-position: center center, center center;
+            background-repeat: no-repeat, no-repeat;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -72,14 +69,14 @@ def serve_ui():
             overflow: hidden;
         }
         .quiz-card {
-            background: rgba(15, 15, 20, 0.72);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(18, 11, 10, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 12px;
             padding: 25px;
             max-width: 420px;
             width: 100%;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.75);
             position: relative;
             border: 1px solid rgba(255,255,255,0.06);
         }
@@ -134,7 +131,7 @@ def serve_ui():
             gap: 12px;
         }
         .option-btn {
-            background: rgba(28, 28, 35, 0.75);
+            background: rgba(35, 25, 23, 0.75);
             border: 1px solid rgba(255,255,255,0.07);
             color: #e5e5ea;
             padding: 14px;
@@ -145,7 +142,7 @@ def serve_ui():
             transition: all 0.2s ease;
         }
         .option-btn:hover {
-            background: rgba(45, 45, 58, 0.85);
+            background: rgba(55, 40, 37, 0.85);
             border-color: rgba(255,255,255,0.2);
         }
         .correct {
@@ -213,7 +210,7 @@ def serve_ui():
         </div>
     </div>
     <script>
-        let quizzes=[],currentIdx=0,score=0,timeLeft=15,timerInterval=null,canClick=true;
+        let quizzes=[],currentIdx=0,score=0,timeLeft=15,timerInterval=null,canClick=true,isTabActive=true;
         const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 
         function playRobotSound(type) {
@@ -247,14 +244,18 @@ def serve_ui():
                 document.getElementById("q-text").innerText="Failed to initialize quiz module."
             }
         }
+        
+        // Auto pause functionality injected to control visibility state execution
         function startTimer(){
             clearInterval(timerInterval);
             timeLeft=15; canClick=true; updateTimerBar();
             timerInterval=setInterval(()=>{
+                if(!isTabActive) return; // Tab active na thakle countdown level block thakbe
                 timeLeft--; updateTimerBar();
                 if(timeLeft<=0){ clearInterval(timerInterval); canClick=false; autoTimeOut() }
             },1000)
         }
+        
         function updateTimerBar(){
             document.getElementById("t-bar").style.width=(timeLeft/15)*100+"%"
         }
@@ -301,6 +302,16 @@ def serve_ui():
                     </div>
                 </div>`
         }
+
+        // Screen Visibility Watcher logic added 
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                isTabActive = false; // Browser hidden thakle flag off
+            } else {
+                isTabActive = true;  // Browser-e firle abar countdown trigger hobe
+            }
+        });
+
         fetchQuizzes();
     </script>
 </body>
