@@ -13,6 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 20 full complete questions in the database bank
 QUIZ_BANK = [
     {"id": 1, "question": "What is PrismaX?", "options": ["A crypto exchange", "A service layer for Physical AI", "A gaming platform", "A cloud provider"], "answer": "A service layer for Physical AI"},
     {"id": 2, "question": "What are the three core pillars of PrismaX?", "options": ["Compute, Storage, Network", "Data, Teleoperation, Models", "AI, Blockchain, Gaming", "Robots, NFTs, DeFi"], "answer": "Data, Teleoperation, Models"},
@@ -38,6 +39,7 @@ QUIZ_BANK = [
 
 @app.get("/get-quiz")
 def get_quiz():
+    # Protibar backend 20-tar bhetor theke randomly 10-ta choice korbe
     return {"status": "success", "total": 10, "quizzes": random.sample(QUIZ_BANK, 10)}
 
 @app.get("/", response_class=HTMLResponse)
@@ -50,13 +52,14 @@ def serve_ui():
     <title>PRISMAX | QUIZ</title>
     <style>
         body {
-            /* Duta image layer akshathe use kora hoyeche background e */
-            background-image: url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300672.png'), 
-                              url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300671.png');
+            background-image: 
+                url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='562' viewBox='0 0 1000 562'><rect width='1000' height='562' fill='%23231411'/><g opacity='0.55' style='mix-blend-mode:screen'><path d='M150 250h20v20h-20zm30 0h40v20h-40zm50-10h30v40h-30zm40 15h60v10h-60zm70-20h20v50h-20zm30 10h50v30h-50zm60-15h40v40h-40zm50 10h30v20h-30zm40-20h50v60h-50zm60 15h30v30h-30zm40-5h40v20h-40zm50-10h20v40h-20z' fill='%236e3c2c'/><path d='M380 230h40v30h-40zm50 10h30v20h-30zm40-20h50v50h-50zm60 15h30v30h-30zm40-5h40v20h-40zm50-10h20v40h-20zm30-20h40v60h-40zm50 10h30v20h-30zm40-15h50v40h-50zm60 15h30v20h-30z' fill='%23542a1e'/></g><radialGradient id='g' cx='30%' cy='40%' r='60%'><stop offset='0%' stop-color='%23b89678' stop-opacity='0.28'/><stop offset='60%' stop-color='%231a0f0d' stop-opacity='0.95'/><stop offset='100%' stop-color='%23090504'/></radialGradient><rect width='1000' height='562' fill='url(%23g)' style='mix-blend-mode:multiply'/></svg>"),
+                linear-gradient(rgba(18, 18, 24, 0.4) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 18, 24, 0.4) 1px, transparent 1px);
+            background-size: cover, 30px 30px, 30px 30px;
+            background-position: center, center, center;
+            background-repeat: no-repeat, repeat, repeat;
             background-color: #0b0c10;
-            background-size: contain, cover;
-            background-position: center, center;
-            background-repeat: no-repeat, no-repeat;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -66,18 +69,19 @@ def serve_ui():
             margin: 0;
             padding: 15px;
             box-sizing: border-box;
+            overflow: hidden;
         }
         .quiz-card {
-            background: rgba(23, 23, 28, 0.65); /* Opacity komano hoyeche jate background bhalo dekha jay */
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(15, 15, 20, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 12px;
             padding: 25px;
             max-width: 420px;
             width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
             position: relative;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.06);
         }
         .header {
             text-align: center;
@@ -85,25 +89,27 @@ def serve_ui():
         }
         .header h2 {
             letter-spacing: 2px;
-            font-size: 18px;
+            font-size: 19px;
             margin: 0;
-            color: #e0e0e3;
+            color: #e5e5ea;
             text-transform: uppercase;
+            font-weight: 700;
         }
         .subtitle {
             font-size: 11px;
-            color: #888893;
-            margin-top: 5px;
+            color: #9a9a9f;
+            margin-top: 6px;
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
+            font-weight: 600;
         }
         .timer-bar-container {
             width: 100%;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.06);
             height: 4px;
             border-radius: 2px;
             margin-bottom: 20px;
@@ -128,9 +134,9 @@ def serve_ui():
             gap: 12px;
         }
         .option-btn {
-            background: rgba(33, 33, 42, 0.8);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #d1d1d6;
+            background: rgba(28, 28, 35, 0.75);
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #e5e5ea;
             padding: 14px;
             border-radius: 8px;
             text-align: left;
@@ -139,16 +145,17 @@ def serve_ui():
             transition: all 0.2s ease;
         }
         .option-btn:hover {
-            background: rgba(45, 45, 58, 0.9);
+            background: rgba(45, 45, 58, 0.85);
             border-color: rgba(255,255,255,0.2);
         }
         .correct {
-            background: rgba(46, 204, 113, 0.2) !important;
+            background: rgba(46, 204, 113, 0.25) !important;
             border-color: #2ecc71 !important;
             color: #2ecc71 !important;
+            font-weight: bold;
         }
         .wrong {
-            background: rgba(231, 76, 60, 0.2) !important;
+            background: rgba(231, 76, 60, 0.25) !important;
             border-color: #e74c3c !important;
             color: #e74c3c !important;
         }
@@ -191,10 +198,6 @@ def serve_ui():
             text-decoration: none;
             box-sizing: border-box;
         }
-        .x-share-btn:hover {
-            background: #15181c;
-            border-color: rgba(255,255,255,0.4);
-        }
     </style>
 </head>
 <body>
@@ -205,7 +208,7 @@ def serve_ui():
         </div>
         <div id="quiz-body">
             <div class="timer-bar-container"><div class="timer-bar" id="t-bar"></div></div>
-            <div class="question" id="q-text">Loading Quiz...</div>
+            <div class="question" id="q-text">Loading Quiz Data...</div>
             <div class="options-container" id="options-box"></div>
         </div>
     </div>
@@ -217,23 +220,21 @@ def serve_ui():
             try {
                 let osc=audioCtx.createOscillator();
                 let gain=audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 if(type==='correct') {
                     osc.type='triangle';
                     osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); 
-                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
                 } else if(type==='wrong') {
                     osc.type='sawtooth';
-                    osc.frequency.setValueAtTime(140, audioCtx.currentTime); 
-                    osc.frequency.linearRampToValueAtTime(65, audioCtx.currentTime + 0.3); 
-                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+                    osc.frequency.setValueAtTime(130, audioCtx.currentTime); 
+                    osc.frequency.linearRampToValueAtTime(60, audioCtx.currentTime + 0.3); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
                 }
             } catch(e){}
         }
@@ -243,33 +244,22 @@ def serve_ui():
                 let e=await fetch("/get-quiz"),t=await e.json();
                 quizzes=t.quizzes,currentIdx=0,score=0,showQuestion()
             }catch(e){
-                document.getElementById("q-text").innerText="Failed to load quiz. Try again."
+                document.getElementById("q-text").innerText="Failed to initialize quiz module."
             }
         }
         function startTimer(){
             clearInterval(timerInterval);
-            timeLeft=15;
-            canClick=true;
-            updateTimerBar();
+            timeLeft=15; canClick=true; updateTimerBar();
             timerInterval=setInterval(()=>{
-                timeLeft--;
-                updateTimerBar();
-                if(timeLeft<=0){
-                    clearInterval(timerInterval);
-                    canClick=false;
-                    autoTimeOut()
-                }
+                timeLeft--; updateTimerBar();
+                if(timeLeft<=0){ clearInterval(timerInterval); canClick=false; autoTimeOut() }
             },1000)
         }
         function updateTimerBar(){
-            let percentage=(timeLeft/15)*100;
-            document.getElementById("t-bar").style.width=percentage+"%"
+            document.getElementById("t-bar").style.width=(timeLeft/15)*100+"%"
         }
         function showQuestion(){
-            if(currentIdx>=quizzes.length){
-                showResult();
-                return
-            }
+            if(currentIdx>=quizzes.length){ showResult(); return }
             startTimer();
             let e=quizzes[currentIdx];
             document.getElementById("q-text").innerText=`Q${currentIdx+1}. ${e.question}`;
@@ -281,45 +271,32 @@ def serve_ui():
         }
         function checkAnswer(e,t,n){
             if(!canClick)return;
-            clearInterval(timerInterval);
-            canClick=false;
+            clearInterval(timerInterval); canClick=false;
             let o=document.querySelectorAll(".option-btn");
             o.forEach(e=>e.disabled=!0);
-            if(t===n){
-                e.classList.add("correct");
-                playRobotSound('correct');
-                score++
-            }else{
-                e.classList.add("wrong");
-                playRobotSound('wrong');
-                o.forEach(e=>{if(e.innerText===n)e.classList.add("correct")})
-            }
-            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+            if(t===n){ e.classList.add("correct"); playRobotSound('correct'); score++ }
+            else { e.classList.add("wrong"); playRobotSound('wrong'); o.forEach(e=>{if(e.innerText===n)e.classList.add("correct")}) }
+            setTimeout(()=>{currentIdx++,showQuestion()},1400)
         }
         function autoTimeOut(){
             playRobotSound('wrong');
             let e=quizzes[currentIdx].answer;
-            let t=document.querySelectorAll(".option-btn");
-            t.forEach(t=>{
+            document.querySelectorAll(".option-btn").forEach(t=>{
                 t.disabled=!0;
-                if(t.innerText===e)t.classList.add("correct");
-                else t.classList.add("wrong")
+                if(t.innerText===e)t.classList.add("correct"); else t.classList.add("wrong");
             });
-            setTimeout(()=>{currentIdx++,showQuestion()},1500)
+            setTimeout(()=>{currentIdx++,showQuestion()},1400)
         }
         function showResult(){
             clearInterval(timerInterval);
-            let shareText=encodeURIComponent(`I just scored ${score}/10 on the PRISMAX Physical AI Quiz! 🧠🚀\n\nTry it here: ${window.location.origin}`);
+            let shareText=encodeURIComponent(`I just scored ${score}/10 on the PRISMAX Physical AI Quiz! 🧠🚀\\n\\nTry it here: ${window.location.origin}`);
             let xUrl= `https://x.com/intent/tweet?text=${shareText}`;
             document.getElementById("quiz-body").innerHTML=`
                 <div class="score-screen">
-                    <h3>Quiz Completed!</h3>
-                    <p style="font-size: 24px; color:#00f2fe; margin-bottom:25px;">Your Score: ${score} / ${quizzes.length}</p>
+                    <h3 style='color:#e5e5ea;margin-bottom:10px;'>Quiz Completed!</h3>
+                    <p style="font-size: 24px; color:#00f2fe; margin-bottom:25px; font-weight:700;">Your Score: ${score} / ${quizzes.length}</p>
                     <div class="btn-group">
-                        <a class="x-share-btn" href="${xUrl}" target="_blank">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                            Share on X
-                        </a>
+                        <a class="x-share-btn" href="${xUrl}" target="_blank">Share on X</a>
                         <button class="restart-btn" onclick="location.reload()">Play Again</button>
                     </div>
                 </div>`
