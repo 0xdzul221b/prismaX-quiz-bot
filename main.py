@@ -50,9 +50,8 @@ def serve_ui():
     <title>PRISMAX | QUIZ</title>
     <style>
         body {
-            background-image: 
-                url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300672.png'), 
-                url('https://raw.githubusercontent.com/0xdzul221b/prismaX-quiz-bot/main/1000300671.png');
+            /* GitHub direct asset proxy link bypass implementation */
+            background-image: url('https://github.com/user-attachments/assets/7d565116-9866-488b-a2ee-661c3b14c337'), radial-gradient(circle at center, #1b1311 0%, #0d0908 100%);
             background-color: #0d0908;
             background-size: 85% auto, cover;
             background-position: center center, center center;
@@ -244,18 +243,15 @@ def serve_ui():
                 document.getElementById("q-text").innerText="Failed to initialize quiz module."
             }
         }
-        
-        // Auto pause functionality injected to control visibility state execution
         function startTimer(){
             clearInterval(timerInterval);
             timeLeft=15; canClick=true; updateTimerBar();
             timerInterval=setInterval(()=>{
-                if(!isTabActive) return; // Tab active na thakle countdown level block thakbe
+                if(!isTabActive) return;
                 timeLeft--; updateTimerBar();
                 if(timeLeft<=0){ clearInterval(timerInterval); canClick=false; autoTimeOut() }
             },1000)
         }
-        
         function updateTimerBar(){
             document.getElementById("t-bar").style.width=(timeLeft/15)*100+"%"
         }
@@ -303,12 +299,11 @@ def serve_ui():
                 </div>`
         }
 
-        // Screen Visibility Watcher logic added 
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
-                isTabActive = false; // Browser hidden thakle flag off
+                isTabActive = false;
             } else {
-                isTabActive = true;  // Browser-e firle abar countdown trigger hobe
+                isTabActive = true;
             }
         });
 
