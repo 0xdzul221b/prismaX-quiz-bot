@@ -50,12 +50,11 @@ def serve_ui():
     <title>PRISMAX | QUIZ</title>
     <style>
         body {
-            /* GitHub direct asset proxy link bypass implementation */
-            background-image: url('https://github.com/user-attachments/assets/7d565116-9866-488b-a2ee-661c3b14c337'), radial-gradient(circle at center, #1b1311 0%, #0d0908 100%);
-            background-color: #0d0908;
-            background-size: 85% auto, cover;
-            background-position: center center, center center;
-            background-repeat: no-repeat, no-repeat;
+            /* Smooth mesh glow using your exact color codes */
+            background: radial-gradient(circle at 10% 20%, rgba(237, 228, 213, 0.15) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(149, 121, 91, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at center, #14110f 0%, #080605 100%);
+            background-color: #080605;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
@@ -67,61 +66,78 @@ def serve_ui():
             box-sizing: border-box;
             overflow: hidden;
         }
+        
+        /* Premium Glowing Glassmorphism Quiz Card */
         .quiz-card {
-            background: rgba(18, 11, 10, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 12px;
-            padding: 25px;
-            max-width: 420px;
+            background: rgba(24, 20, 18, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 430px;
             width: 100%;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.75);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+                        0 0 30px rgba(149, 121, 91, 0.05);
             position: relative;
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(237, 228, 213, 0.08);
         }
+        
+        /* Top border gradient accent matching your profile color themes */
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, rgb(149, 121, 91), rgb(237, 228, 213));
+            border-radius: 16px 16px 0 0;
+        }
+        
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
         .header h2 {
-            letter-spacing: 2px;
-            font-size: 19px;
+            letter-spacing: 3px;
+            font-size: 21px;
             margin: 0;
-            color: #e5e5ea;
+            color: rgb(237, 228, 213);
             text-transform: uppercase;
-            font-weight: 700;
+            font-weight: 800;
+            text-shadow: 0 2px 8px rgba(237, 228, 213, 0.2);
         }
         .subtitle {
             font-size: 11px;
-            color: #9a9a9f;
-            margin-top: 6px;
+            color: rgba(237, 228, 213, 0.6);
+            margin-top: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 5px;
             font-weight: 600;
         }
+        
         .timer-bar-container {
             width: 100%;
-            background: rgba(255,255,255,0.06);
-            height: 4px;
-            border-radius: 2px;
-            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            height: 5px;
+            border-radius: 3px;
+            margin-bottom: 24px;
             overflow: hidden;
         }
         .timer-bar {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #00f2fe, #4285f4);
+            background: linear-gradient(90deg, rgb(149, 121, 91), rgb(237, 228, 213));
             transition: width 1s linear;
         }
+        
         .question {
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            color: #f1f1f5;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: #f5f4f2;
             font-weight: 500;
         }
         .options-container {
@@ -129,34 +145,43 @@ def serve_ui():
             flex-direction: column;
             gap: 12px;
         }
+        
+        /* Modern Button Styling utilizing your core colors */
         .option-btn {
-            background: rgba(35, 25, 23, 0.75);
-            border: 1px solid rgba(255,255,255,0.07);
-            color: #e5e5ea;
-            padding: 14px;
-            border-radius: 8px;
+            background: rgba(36, 30, 27, 0.6);
+            border: 1px solid rgba(237, 228, 213, 0.1);
+            color: #e5e3df;
+            padding: 15px;
+            border-radius: 10px;
             text-align: left;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .option-btn:hover {
-            background: rgba(55, 40, 37, 0.85);
-            border-color: rgba(255,255,255,0.2);
+            background: rgba(149, 121, 91, 0.2);
+            border-color: rgb(149, 121, 91);
+            color: #ffffff;
+            transform: translateY(-1px);
         }
+        
+        /* Feedback State Overrides */
         .correct {
-            background: rgba(46, 204, 113, 0.25) !important;
+            background: rgba(46, 204, 113, 0.2) !important;
             border-color: #2ecc71 !important;
             color: #2ecc71 !important;
             font-weight: bold;
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.15);
         }
         .wrong {
-            background: rgba(231, 76, 60, 0.25) !important;
+            background: rgba(231, 76, 60, 0.2) !important;
             border-color: #e74c3c !important;
             color: #e74c3c !important;
         }
+        
         .score-screen {
             text-align: center;
+            padding: 10px 0;
         }
         .btn-group {
             display: flex;
@@ -164,35 +189,46 @@ def serve_ui():
             gap: 12px;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 24px;
         }
+        
         .restart-btn {
-            background: linear-gradient(90deg, #4285f4, #a733ff);
-            color: white;
+            background: linear-gradient(90deg, rgb(149, 121, 91), rgb(237, 228, 213));
+            color: #080605;
             border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             width: 100%;
-            max-width: 200px;
+            max-width: 220px;
+            transition: opacity 0.2s ease;
         }
+        .restart-btn:hover {
+            opacity: 0.95;
+        }
+        
         .x-share-btn {
-            background: #000;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 25px;
-            border-radius: 8px;
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid rgba(237, 228, 213, 0.2);
+            padding: 14px 28px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
-            max-width: 200px;
+            max-width: 220px;
             text-decoration: none;
             box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        .x-share-btn:hover {
+            border-color: rgb(237, 228, 213);
+            background: rgba(255,255,255,0.03);
         }
     </style>
 </head>
@@ -243,6 +279,7 @@ def serve_ui():
                 document.getElementById("q-text").innerText="Failed to initialize quiz module."
             }
         }
+        
         function startTimer(){
             clearInterval(timerInterval);
             timeLeft=15; canClick=true; updateTimerBar();
@@ -252,9 +289,11 @@ def serve_ui():
                 if(timeLeft<=0){ clearInterval(timerInterval); canClick=false; autoTimeOut() }
             },1000)
         }
+        
         function updateTimerBar(){
             document.getElementById("t-bar").style.width=(timeLeft/15)*100+"%"
         }
+        
         function showQuestion(){
             if(currentIdx>=quizzes.length){ showResult(); return }
             startTimer();
@@ -266,6 +305,7 @@ def serve_ui():
                 o.className="option-btn",o.innerText=n,o.onclick=()=>checkAnswer(o,n,e.answer),t.appendChild(o)
             })
         }
+        
         function checkAnswer(e,t,n){
             if(!canClick)return;
             clearInterval(timerInterval); canClick=false;
@@ -275,6 +315,7 @@ def serve_ui():
             else { e.classList.add("wrong"); playRobotSound('wrong'); o.forEach(e=>{if(e.innerText===n)e.classList.add("correct")}) }
             setTimeout(()=>{currentIdx++,showQuestion()},1400)
         }
+        
         function autoTimeOut(){
             playRobotSound('wrong');
             let e=quizzes[currentIdx].answer;
@@ -284,14 +325,15 @@ def serve_ui():
             });
             setTimeout(()=>{currentIdx++,showQuestion()},1400)
         }
+        
         function showResult(){
             clearInterval(timerInterval);
             let shareText=encodeURIComponent(`I just scored ${score}/10 on the PRISMAX Physical AI Quiz! 🧠🚀\\n\\nTry it here: ${window.location.origin}`);
             let xUrl= `https://x.com/intent/tweet?text=${shareText}`;
             document.getElementById("quiz-body").innerHTML=`
                 <div class="score-screen">
-                    <h3 style='color:#e5e5ea;margin-bottom:10px;'>Quiz Completed!</h3>
-                    <p style="font-size: 24px; color:#00f2fe; margin-bottom:25px; font-weight:700;">Your Score: ${score} / ${quizzes.length}</p>
+                    <h3 style='color:rgb(237, 228, 213);margin-bottom:10px;'>Quiz Completed!</h3>
+                    <p style="font-size: 26px; color:rgb(237, 228, 213); margin-bottom:25px; font-weight:800;">Your Score: ${score} / ${quizzes.length}</p>
                     <div class="btn-group">
                         <a class="x-share-btn" href="${xUrl}" target="_blank">Share on X</a>
                         <button class="restart-btn" onclick="location.reload()">Play Again</button>
